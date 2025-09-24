@@ -1,10 +1,10 @@
 package com.example.springapp;
 
-import com.example.springapp.dao.TestDao;
-import com.example.springapp.domain.TestObject;
+import com.example.springapp.dao.ExamDao;
+import com.example.springapp.domain.Exam;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 import java.util.ArrayList;
@@ -14,30 +14,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class SpringAppTests {
-    private final ClassPathXmlApplicationContext CONTEXT =
-            new ClassPathXmlApplicationContext("/spring-context.xml");
+    private final AnnotationConfigApplicationContext CONTEXT =
+            new AnnotationConfigApplicationContext(SpringApp.class);
     private final ClassPathResource CSV = CONTEXT.getBean(ClassPathResource.class);
-    private final TestDao DAO = CONTEXT.getBean(TestDao.class);
+    private final ExamDao DAO = CONTEXT.getBean(ExamDao.class);
 
     @Test
-    void testReadTest() {
-        assertEquals(6, DAO.readTest(CSV).size());
+    void testRead() {
+        assertEquals(5, DAO.read(CSV).size());
     }
 
     @Test
     void testAnswersAndQuestions() {
-        List<TestObject> testRes = DAO.readTest(CSV);
-        List<TestObject> testExp = new ArrayList<>();
-        testExp.add(new TestObject("What do you like to do?", "[1] skate [2] drive [3] walk"));
-        testExp.add(new TestObject("What's your favourite colour?", "[1] red [2] green [3] yellow [4] blue"));
-        testExp.add(new TestObject("Do you have any hobbies?", "[1] coding [2] painting [3] skating"));
-        testExp.add(new TestObject("Do you listen to music?", "[1] yes [2] no"));
-        testExp.add(new TestObject("Do you like painting?", "[1] yes [2] no"));
-        testExp.add(new TestObject("Do you like coding?", "[1] yes [2] no"));
+        List<Exam> examRes = DAO.read(CSV);
+        List<Exam> examExp = new ArrayList<>();
+        examExp.add(new Exam("Was \"Mona Lisa\" painted by Sandro Botticelli?","YES/NO","no",20));
+        examExp.add(new Exam("Was \"The Birth of Venus\" painted by Sandro Botticelli?","YES/NO","yes",20));
+        examExp.add(new Exam("Was \"Mona Lisa\" painted by Leonardo da Vinci?","YES/NO","yes",20));
+        examExp.add(new Exam("Was \"The Creation of Adam\" painted by Tiziano Vecelli?","YES/NO","no",20));
+        examExp.add(new Exam("Was \"The Creation of Adam\" painted by Michelangelo Buonarroti?","YES/NO","yes",20));
 
-        for (int i = 0; i < testRes.size(); i++) {
-            assertEquals(testRes.get(i).getQuestion(), testExp.get(i).getQuestion());
-            assertEquals(testRes.get(i).getAnswer(), testExp.get(i).getAnswer());
+        for (int i = 0; i < examRes.size(); i++) {
+            assertEquals(examRes.get(i).getQuestion(), examExp.get(i).getQuestion());
+            assertEquals(examRes.get(i).getAnswer(), examExp.get(i).getAnswer());
         }
     }
 }
