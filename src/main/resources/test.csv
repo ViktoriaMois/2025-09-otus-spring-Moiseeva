@@ -1,7 +1,6 @@
-Question,Answer
-What do you like to do?,[1] skate [2] drive [3] walk
-What's your favourite colour?,[1] red [2] green [3] yellow [4] blue
-Do you have any hobbies?,[1] coding [2] painting [3] skating
-Do you listen to music?,[1] yes [2] no
-Do you like painting?,[1] yes [2] no
-Do you like coding?,[1] yes [2] no
+Question,Answer,Right Answer,Points
+Was «Mona Lisa» painted by Sandro Botticelli?,YES/NO,no,20
+Was «The Birth of Venus» painted by Sandro Botticelli?,YES/NO,yes,20
+Was «Mona Lisa» painted by Leonardo da Vinci?,YES/NO,yes,20
+Was «The Creation of Adam» painted by Tiziano Vecelli?,YES/NO,no,20
+Was «The Creation of Adam» painted by Michelangelo Buonarroti?,YES/NO,yes,20
