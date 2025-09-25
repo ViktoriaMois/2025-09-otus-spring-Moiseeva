@@ -1,10 +1,12 @@
 package com.example.springapp.dao;
 
 import com.example.springapp.domain.Exam;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import java.util.List;
+import java.util.Scanner;
 
 public interface ExamDao {
 
-    List<Exam> read(ClassPathResource csvResource);
+    List<Exam> read(ClassPathResource csvResource, Scanner sc, MessageSource msg, String lang);
 }
