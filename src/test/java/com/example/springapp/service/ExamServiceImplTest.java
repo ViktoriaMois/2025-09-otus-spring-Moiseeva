@@ -8,10 +8,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.shell.Shell;
 
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +24,9 @@ class ExamServiceImplTest {
     private final ExamService EXAM_SERVICE = new ExamServiceImpl(DAO);
     private final ClassPathResource CSV = new ClassPathResource("/test.csv");
     private Exam exam;
+
+    @MockBean
+    private Shell shell;
 
     @Autowired
     private MessageSource msg;
