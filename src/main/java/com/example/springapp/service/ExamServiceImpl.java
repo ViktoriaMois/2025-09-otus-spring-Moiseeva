@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ExamServiceImpl implements ExamService {
     private final ExamDao dao;
 
@@ -47,7 +47,6 @@ public class ExamServiceImpl implements ExamService {
             points = result(right, examList.get(i), points, pointsPerQuestion);
         }
 
-        sc.close();
         System.out.println(msg.getMessage("main.score.string", new Object[]{studentName, points, maxPoints}, Locale.forLanguageTag(lang)));
         if (points > minPoints) {
             System.out.println(msg.getMessage("main.success.string", null, Locale.forLanguageTag(lang)));
