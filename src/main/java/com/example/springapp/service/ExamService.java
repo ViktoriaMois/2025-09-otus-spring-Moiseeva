@@ -8,9 +8,15 @@ import java.util.Scanner;
 
 public interface ExamService {
 
-    void print(ClassPathResource csvResource, Scanner sc, MessageSource msg);
+    void print();
 
     boolean checkAnswer(Exam exam, String answer);
 
-    int result(boolean right, Exam exam, int points, int pointsPerQuestion);
+    void result(boolean right);
+
+    void out(String message, Object[] obj);
+
+    String readString(Scanner scanner);
+
+    int getPoints();
 }

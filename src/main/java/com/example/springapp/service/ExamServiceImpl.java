@@ -2,7 +2,9 @@ package com.example.springapp.service;
 
 import com.example.springapp.dao.ExamDao;
 import com.example.springapp.domain.Exam;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
@@ -12,47 +14,84 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-@Service
-@RequiredArgsConstructor
-public class ExamServiceImpl implements ExamService {
-    private final ExamDao dao;
+import static java.lang.Integer.parseInt;
 
+@RequiredArgsConstructor
+@Service
+public class ExamServiceImpl implements ExamService {
+    private final ExamDao DAO;
+    private final MessageSource MSG;
+    private final ClassPathResource CSV;
+
+    @Getter @Setter private String lang = "";
+    @Getter @Setter private String studentName = "";
+    @Getter @Setter private int questionsWanted;
+    @Getter @Setter private int points = 0;
+
+    @Value("${spring.web.locale}")
+    private Locale locale;
     @Value("${exam.minPoints}")
     private int minPoints;
-
     @Value("${exam.maxPoints}")
     private int maxPoints;
-
     @Value("${exam.pointsPerQuestion}")
     private int pointsPerQuestion;
+    @Value("${exam.minQuestions}")
+    private int minQuestions;
+    @Value("${exam.maxQuestions}")
+    private int maxQuestions;
 
     @Override
-    public void print(ClassPathResource csvResource, Scanner sc, MessageSource msg) {
-        String lang = "";
-        System.out.println("ENG/RU");
-        if (sc.nextLine().equalsIgnoreCase("ru")) {
-            lang = "ru-RU";
+    public void print() {
+        Scanner sc = new Scanner(System.in);
+        prepare(sc);
+        List<Exam> examList = DAO.read(CSV);
+        for (int i = 0; i < questionsWanted; i++) {
+            out("main.question.string[" + i + "]", null);
+            out("main.answers.string", null);
+            String studentAnswer = readString(sc).toLowerCase();
+            result(checkAnswer(examList.get(i), studentAnswer));
         }
+        sc.close();
+        score();
+    }
 
-        System.out.println(msg.getMessage("main.student-name.string", null, Locale.forLanguageTag(lang)));
-        String studentName = sc.nextLine();
+    private void prepare(Scanner sc) {
+        out("main.student-name.string", null);
+        setStudentName(readString(sc));
 
-        int points = 0;
-        List<Exam> examList = dao.read(csvResource, sc, msg, lang);
-        for (int i = 0; i < examList.size(); i++) {
-            System.out.println(msg.getMessage("main.question.string[" + i + "]", null, Locale.forLanguageTag(lang)) +
-                    "\n" + msg.getMessage("main.answers.string", null, Locale.forLanguageTag(lang)));
-            String studentAnswer = sc.nextLine().toLowerCase();
-            boolean right = checkAnswer(examList.get(i), studentAnswer);
-            points = result(right, examList.get(i), points, pointsPerQuestion);
+        out("main.question-amount.string", new Object[]{minQuestions});
+        setQuestionsWanted(parseInt(readString(sc)));
+
+        if (questionsWanted < minQuestions) {
+            out("main.warning-less.string", new Object[]{minQuestions});
+            throw new RuntimeException();
+        } else if (questionsWanted > maxQuestions) {
+            out("main.warning-more.string", new Object[]{maxQuestions});
+            throw new RuntimeException();
         }
+    }
 
-        System.out.println(msg.getMessage("main.score.string", new Object[]{studentName, points, maxPoints}, Locale.forLanguageTag(lang)));
+    private void score() {
+        out("main.score.string", new Object[]{studentName, points, maxPoints});
         if (points > minPoints) {
-            System.out.println(msg.getMessage("main.success.string", null, Locale.forLanguageTag(lang)));
+            out("main.success.string", null);
         } else {
-            System.out.println(msg.getMessage("main.failure.string", null, Locale.forLanguageTag(lang)));
+            out("main.failure.string", null);
         }
+    }
+
+    @Override
+    public void out(String message, Object[] obj) {
+        System.out.println(MSG.getMessage(message, obj, locale));
+    }
+
+    @Override
+    public String readString(Scanner sc) {
+        if (!sc.hasNextLine()){
+            return null;
+        }
+        return sc.nextLine();
     }
 
     @Override
@@ -61,10 +100,9 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public int result(boolean right, Exam exam, int points, int pointsPerQuestion) {
+    public void result(boolean right) {
         if (right) {
-            points += pointsPerQuestion;
+            this.points += pointsPerQuestion;
         }
-        return points;
     }
 }

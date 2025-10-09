@@ -8,5 +8,5 @@ import java.util.Scanner;
 
 public interface ExamDao {
 
-    List<Exam> read(ClassPathResource csvResource, Scanner sc, MessageSource msg, String lang);
+    List<Exam> read(ClassPathResource csvResource);
 }

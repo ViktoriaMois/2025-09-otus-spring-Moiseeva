@@ -1,45 +1,40 @@
 package com.example.springapp.dao;
 
+import com.example.springapp.TestConfig;
 import com.example.springapp.domain.Exam;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.shell.Shell;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(classes = {TestConfig.class})
+@ActiveProfiles("test")
 class ExamDaoImplTest {
-    private final ExamDao DAO = new ExamDaoImpl(Logger.getLogger(ExamDaoImpl.class.getName()), 3);
-    private final ClassPathResource CSV = new ClassPathResource("/test.csv");
 
+    @Qualifier("testExamDao")
     @Autowired
-    private MessageSource msg;
+    private ExamDao dao;
 
-    @MockBean
-    private Shell shell;
 
-    @ParameterizedTest
-    @ValueSource(strings = {"5\n"})
-    void testRead(String userInput) {
-        Scanner sc = new Scanner(userInput);
-        assertEquals(5, DAO.read(CSV, sc, msg, "eng").size(), "success");
+    @Qualifier("testCsvResource")
+    @Autowired
+    private ClassPathResource csv;
+
+    @Test
+    void read() {
+        assertEquals(5, dao.read(csv).size(), "success");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"5\n"})
-    void testAnswersAndQuestions(String userInput) {
-        Scanner sc = new Scanner(userInput);
-        List<Exam> examRes = DAO.read(CSV, sc, msg, "eng");
+    @Test
+    void answersAndQuestions() {
+        List<Exam> examRes = dao.read(csv);
         List<Exam> examExp = new ArrayList<>();
         examExp.add(new Exam("Was «Mona Lisa» painted by Sandro Botticelli?","YES/NO","no/нет"));
         examExp.add(new Exam("Was «The Birth of Venus» painted by Sandro Botticelli?","YES/NO","yes/да"));
