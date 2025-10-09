@@ -10,14 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-
-import static java.lang.Integer.parseInt;
 
 @Component
 @NoArgsConstructor
 public class ExamDaoImpl implements ExamDao {
-    public Logger logger = Logger.getLogger(ExamDaoImpl.class.getName());
 
     @Override
     public List<Exam> read(ClassPathResource csvResource) {
@@ -28,11 +24,10 @@ public class ExamDaoImpl implements ExamDao {
             examList = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 String[] split = line.split(",");
-                if (!split[0].isEmpty() && !split[1].isEmpty() && !split[2].isEmpty() && !split[3].isEmpty()) {
-                    examList.add(new Exam(split[0], split[1], split[2], parseInt(split[3])));
+                if (!split[0].isEmpty() && !split[1].isEmpty() && !split[2].isEmpty() ) {
+                    examList.add(new Exam(split[0], split[1], split[2]));
                 }
                 else {
-                    logger.warning("File contains empty rows");
                     throw new RuntimeException();
                 }
             }

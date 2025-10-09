@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: SpringApp
+  messages:
+    basename: i18n/messages
+  web:
+    locale: ru_RU
+
+exam:
+  minPoints: 50
+  maxPoints: 100
+  minQuestions: 3
+  maxQuestions: 5
+  pointsPerQuestion: 20
+
+csv:
+  path: /test.csv
