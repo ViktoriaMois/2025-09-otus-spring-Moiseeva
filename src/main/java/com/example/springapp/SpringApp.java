@@ -6,8 +6,6 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
-import java.util.Scanner;
-
 @SpringBootApplication
 public class SpringApp {
 
@@ -18,7 +16,6 @@ public class SpringApp {
     }
 
     public static void main(String[] args) {
-
         SpringApplication.run(SpringApp.class, args);
     }
 }

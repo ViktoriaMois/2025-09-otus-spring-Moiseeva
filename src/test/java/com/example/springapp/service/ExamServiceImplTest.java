@@ -1,12 +1,13 @@
 package com.example.springapp.service;
 
-import com.example.springapp.TestConfig;
 import com.example.springapp.domain.Exam;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.shell.Shell;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.ByteArrayInputStream;
@@ -14,12 +15,15 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = {TestConfig.class})
+@SpringBootTest()
 @ActiveProfiles("test")
 class ExamServiceImplTest {
 
     @Autowired
     private ExamService examService;
+
+    @MockBean
+    private Shell shell;
 
     @ParameterizedTest
     @ValueSource(strings = {"1Test\n5\nno\nyes\nyes\nno\nyes"

@@ -1,12 +1,14 @@
 package com.example.springapp.dao;
 
-import com.example.springapp.TestConfig;
+//import com.example.springapp.TestConfig;
 import com.example.springapp.domain.Exam;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.shell.Shell;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -14,18 +16,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = {TestConfig.class})
+@SpringBootTest
 @ActiveProfiles("test")
 class ExamDaoImplTest {
 
-    @Qualifier("testExamDao")
     @Autowired
     private ExamDao dao;
 
+    @MockBean
+    private Shell shell;
 
-    @Qualifier("testCsvResource")
-    @Autowired
-    private ClassPathResource csv;
+    private final ClassPathResource csv = new ClassPathResource("/test.csv");
 
     @Test
     void read() {
@@ -43,8 +44,14 @@ class ExamDaoImplTest {
         examExp.add(new Exam("Was «The Creation of Adam» painted by Michelangelo Buonarroti?","YES/NO","yes/да"));
 
         for (int i = 0; i < examRes.size(); i++) {
-            assertEquals(examRes.get(i).getQuestion(), examExp.get(i).getQuestion(), "success");
+            assertEquals(normalize(examRes.get(i).getQuestion()), examExp.get(i).getQuestion(), "success");
             assertEquals(examRes.get(i).getAnswer(), examExp.get(i).getAnswer(), "success");
         }
+    }
+
+    private String normalize(String s) {
+        return s.replace("В«", "«")
+                .replace("В»", "»")
+                .trim();
     }
 }
