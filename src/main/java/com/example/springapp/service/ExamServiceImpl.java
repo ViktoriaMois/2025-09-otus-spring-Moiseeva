@@ -5,6 +5,8 @@ import com.example.springapp.domain.Exam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
@@ -21,7 +23,6 @@ import static java.lang.Integer.parseInt;
 public class ExamServiceImpl implements ExamService {
     private final ExamDao DAO;
     private final MessageSource MSG;
-    private final ClassPathResource CSV;
 
     @Getter @Setter private String lang = "";
     @Getter @Setter private String studentName = "";
@@ -40,19 +41,20 @@ public class ExamServiceImpl implements ExamService {
     private int minQuestions;
     @Value("${exam.maxQuestions}")
     private int maxQuestions;
+    @Value("${csv.path}")
+    private String csv;
 
     @Override
     public void print() {
         Scanner sc = new Scanner(System.in);
         prepare(sc);
-        List<Exam> examList = DAO.read(CSV);
+        List<Exam> examList = DAO.read(new ClassPathResource(csv));
         for (int i = 0; i < questionsWanted; i++) {
             out("main.question.string[" + i + "]", null);
             out("main.answers.string", null);
             String studentAnswer = readString(sc).toLowerCase();
             result(checkAnswer(examList.get(i), studentAnswer));
         }
-        sc.close();
         score();
     }
 
