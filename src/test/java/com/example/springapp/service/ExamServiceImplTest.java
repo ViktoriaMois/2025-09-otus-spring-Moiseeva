@@ -15,15 +15,12 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest()
+@SpringBootTest(properties = "spring.shell.interactive.enabled=false")
 @ActiveProfiles("test")
 class ExamServiceImplTest {
 
     @Autowired
     private ExamService examService;
-
-    @MockBean
-    private Shell shell;
 
     @ParameterizedTest
     @ValueSource(strings = {"1Test\n5\nno\nyes\nyes\nno\nyes"
