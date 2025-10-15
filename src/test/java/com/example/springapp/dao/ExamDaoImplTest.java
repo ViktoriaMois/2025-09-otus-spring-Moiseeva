@@ -1,14 +1,10 @@
 package com.example.springapp.dao;
 
-//import com.example.springapp.TestConfig;
 import com.example.springapp.domain.Exam;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.shell.Shell;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -16,17 +12,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.shell.interactive.enabled=false")
 @ActiveProfiles("test")
 class ExamDaoImplTest {
 
     @Autowired
     private ExamDao dao;
 
-    @MockBean
-    private Shell shell;
-
-    private final ClassPathResource csv = new ClassPathResource("/test.csv");
+    private final ClassPathResource csv = new ClassPathResource("file_for_test.csv");
 
     @Test
     void read() {
