@@ -1,20 +1,21 @@
 package com.example.springapp;
 
-import com.example.springapp.service.ExamService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 @SpringBootApplication
-@ComponentScan("com.example.springapp.config")
 public class SpringApp {
 
-    public static void main(String[] args) {
-        ApplicationContext context =
-                SpringApplication.run(SpringApp.class, args);
+    public ApplicationEventMulticaster applicationEventMulticaster() {
+        SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
+        eventMulticaster.setTaskExecutor(new SimpleAsyncTaskExecutor());
+        return eventMulticaster;
+    }
 
-        ExamService examService = context.getBean(ExamService.class);
-        examService.print();
+    public static void main(String[] args) {
+        SpringApplication.run(SpringApp.class, args);
     }
 }
