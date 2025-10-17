@@ -1,46 +1,37 @@
-package com.example.springapp.config;
+package com.example.springapp;
 
 import com.example.springapp.dao.ExamDao;
 import com.example.springapp.dao.ExamDaoImpl;
 import com.example.springapp.service.ExamService;
 import com.example.springapp.service.ExamServiceImpl;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 
-@Configuration
-@ConfigurationProperties(prefix = "csv")
-public class SpringAppConfig {
+@TestConfiguration
+public class TestConfig {
 
-    @Value("${csv.path}")
-    private String csv;
-
-    @Value("${spring.messages.basename}")
-    private String basename;
-
-    @Bean
+    @Bean(name = "testCsvResource")
     public ClassPathResource csvResource() {
-        return new ClassPathResource(csv);
+        return new ClassPathResource("test.csv");
     }
 
-    @Bean
+    @Bean(name = "testMessageSource")
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames(basename);
+        messageSource.setBasenames("i18n/messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 
-    @Bean
+    @Bean(name = "testExamDao")
     public ExamDao examDao() {
         return new ExamDaoImpl();
     }
 
-    @Bean
+    @Bean(name = "testExamService")
     public ExamService examService() {
         return new ExamServiceImpl(examDao(), messageSource(),csvResource());
     }

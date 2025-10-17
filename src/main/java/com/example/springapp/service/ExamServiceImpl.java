@@ -2,55 +2,107 @@ package com.example.springapp.service;
 
 import com.example.springapp.dao.ExamDao;
 import com.example.springapp.domain.Exam;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
+
+import static java.lang.Integer.parseInt;
 
 @RequiredArgsConstructor
 @Service
 public class ExamServiceImpl implements ExamService {
-    private final ExamDao dao;
+    private final ExamDao DAO;
+    private final MessageSource MSG;
+    private final ClassPathResource CSV;
+
+    @Getter @Setter private String lang = "";
+    @Getter @Setter private String studentName = "";
+    @Getter @Setter private int questionsWanted;
+    @Getter @Setter private int points = 0;
+
+    @Value("${spring.web.locale}")
+    private Locale locale;
+    @Value("${exam.minPoints}")
+    private int minPoints;
+    @Value("${exam.maxPoints}")
+    private int maxPoints;
+    @Value("${exam.pointsPerQuestion}")
+    private int pointsPerQuestion;
+    @Value("${exam.minQuestions}")
+    private int minQuestions;
+    @Value("${exam.maxQuestions}")
+    private int maxQuestions;
 
     @Override
-    public void print(ClassPathResource csvResource, Scanner sc) {
-        int points = 0;
-        int totalPerExam = 0;
-
-        System.out.println("Please, type your name and surname: ");
-        String studentName = sc.nextLine();
-
-        List<Exam> examList = dao.read(csvResource);
-        for (Exam e : examList) {
-            System.out.println(e.getQuestion() + "\n" + e.getAnswer());
-            String studentAnswer = sc.next().toLowerCase();
-            boolean right = checkAnswer(e, studentAnswer);
-            points = result(right, e, points);
-            totalPerExam += e.getPoints();
-
+    public void print() {
+        Scanner sc = new Scanner(System.in);
+        prepare(sc);
+        List<Exam> examList = DAO.read(CSV);
+        for (int i = 0; i < questionsWanted; i++) {
+            out("main.question.string[" + i + "]", null);
+            out("main.answers.string", null);
+            String studentAnswer = readString(sc).toLowerCase();
+            result(checkAnswer(examList.get(i), studentAnswer));
         }
-
         sc.close();
-        System.out.println("Your final score, " + studentName + ", : " + points + "/" + totalPerExam);
-        if (points >= 60) {
-            System.out.println("You've passed the test");
-        } else {
-            System.out.println("You haven't passed the test");
+        score();
+    }
+
+    private void prepare(Scanner sc) {
+        out("main.student-name.string", null);
+        setStudentName(readString(sc));
+
+        out("main.question-amount.string", new Object[]{minQuestions});
+        setQuestionsWanted(parseInt(readString(sc)));
+
+        if (questionsWanted < minQuestions) {
+            out("main.warning-less.string", new Object[]{minQuestions});
+            throw new RuntimeException();
+        } else if (questionsWanted > maxQuestions) {
+            out("main.warning-more.string", new Object[]{maxQuestions});
+            throw new RuntimeException();
         }
+    }
+
+    private void score() {
+        out("main.score.string", new Object[]{studentName, points, maxPoints});
+        if (points > minPoints) {
+            out("main.success.string", null);
+        } else {
+            out("main.failure.string", null);
+        }
+    }
+
+    @Override
+    public void out(String message, Object[] obj) {
+        System.out.println(MSG.getMessage(message, obj, locale));
+    }
+
+    @Override
+    public String readString(Scanner sc) {
+        if (!sc.hasNextLine()){
+            return null;
+        }
+        return sc.nextLine();
     }
 
     @Override
     public boolean checkAnswer(Exam exam, String answer) {
-        return answer.equals(exam.getRightAnswer());
+        return exam.getRightAnswer().contains(answer);
     }
 
     @Override
-    public int result(boolean right, Exam exam, int points) {
+    public void result(boolean right) {
         if (right) {
-            points += exam.getPoints();
+            this.points += pointsPerQuestion;
         }
-        return points;
     }
 }

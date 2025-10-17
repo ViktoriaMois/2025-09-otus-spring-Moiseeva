@@ -10,5 +10,4 @@ public class Exam {
     private final String question;
     private final String answer;
     private final String rightAnswer;
-    private final int points;
 }
