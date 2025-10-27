@@ -1,6 +1,6 @@
-package com.example.springapp.dao;
+package com.example.dao;
 
-import com.example.springapp.domain.Exam;
+import com.example.domain.Exam;
 import lombok.NoArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;

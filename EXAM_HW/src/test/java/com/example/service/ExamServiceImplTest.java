@@ -1,6 +1,6 @@
-package com.example.springapp.service;
+package com.example.service;
 
-import com.example.springapp.domain.Exam;
+import com.example.domain.Exam;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

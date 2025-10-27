@@ -1,6 +1,6 @@
-package com.example.springapp.dao;
+package com.example.dao;
 
-import com.example.springapp.domain.Exam;
+import com.example.domain.Exam;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

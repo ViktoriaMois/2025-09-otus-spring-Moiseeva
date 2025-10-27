@@ -1,6 +1,6 @@
-package com.example.springapp.service;
+package com.example.service;
 
-import com.example.springapp.domain.Exam;
+import com.example.domain.Exam;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 

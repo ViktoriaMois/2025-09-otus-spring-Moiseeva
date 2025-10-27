@@ -1,7 +1,7 @@
-package com.example.springapp.service;
+package com.example.service;
 
-import com.example.springapp.dao.ExamDao;
-import com.example.springapp.domain.Exam;
+import com.example.dao.ExamDao;
+import com.example.domain.Exam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

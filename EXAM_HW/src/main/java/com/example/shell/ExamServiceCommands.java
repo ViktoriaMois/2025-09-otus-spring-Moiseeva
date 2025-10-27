@@ -1,6 +1,6 @@
-package com.example.springapp.shell;
+package com.example.shell;
 
-import com.example.springapp.service.ExamService;
+import com.example.service.ExamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellCommandGroup;
