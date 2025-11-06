@@ -1,11 +1,13 @@
 package com.example.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Data
 public class Author {
-    private final long id;
+    @Setter
+    private Long id;
     private final String fullName;
 }

@@ -33,9 +33,9 @@ class AuthorDaoJdbcTest {
     @Test
     void count() {
         assertEquals(0, authorDaoJdbc.count());
-        authorDaoJdbc.insert(new Author(1L, "Author"));
+        authorDaoJdbc.insert(new Author(null, "Author1"));
         assertEquals(1, authorDaoJdbc.count());
-        authorDaoJdbc.insert(new Author(2L, "Author2"));
+        authorDaoJdbc.insert(new Author(null, "Author2"));
         assertEquals(2, authorDaoJdbc.count());
     }
 
@@ -48,30 +48,31 @@ class AuthorDaoJdbcTest {
 
     @Test
     void getById() {
-        authorDaoJdbc.insert(new Author(1L, "Author"));
-        Author authorExp = authorDaoJdbc.getById(1L);
-        assertEquals(1L, authorExp.getId());
+        authorDaoJdbc.insert(new Author(null, "Author3"));
+        Author authorExp = authorDaoJdbc.getById(authorDaoJdbc.getByName("Author3").getId());
+        assertEquals(authorDaoJdbc.getByName("Author3").getId(), authorExp.getId());
     }
 
     @Test
     void getByName() {
-        authorDaoJdbc.insert(new Author(1L, "Author1"));
-        Author author = authorDaoJdbc.getByName("Author1");
+        authorDaoJdbc.insert(new Author(null, "Author4"));
+        Author author = authorDaoJdbc.getByName("Author4");
         assertNotNull(author);
-        assertEquals("Author1", author.getFullName());
+        assertEquals("Author4", author.getFullName());
     }
 
     @Test
     void insert() {
-        Author author = new Author(4L, "Author4");
+        Author author = new Author(null, "Author5");
         authorDaoJdbc.insert(author);
         assertEquals(1, authorDaoJdbc.count());
     }
 
     @Test
     void deleteById() {
-        authorDaoJdbc.insert(new Author(4L, "Author4"));
-        authorDaoJdbc.deleteById(4L);
-        assertEquals(0, authorDaoJdbc.count());
+        authorDaoJdbc.insert(new Author(null, "Author6"));
+        int amount = authorDaoJdbc.count();
+        authorDaoJdbc.deleteById(authorDaoJdbc.getByName("Author6").getId());
+        assertEquals(amount - 1, authorDaoJdbc.count());
     }
 }

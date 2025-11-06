@@ -2,7 +2,10 @@ package com.example.dao.book;
 
 import com.example.domain.Book;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -27,8 +30,14 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public void insert(Book book) {
-        namedParameterJdbcOperations.update("INSERT INTO books (id_book, name, id_author, id_genre) VALUES (:id_book, :name, :id_author, :id_genre)",
-                Map.of("id_book", book.getId(), "name", book.getName(), "id_author", book.getAuthor(), "id_genre", book.getGenre()));
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource params = new MapSqlParameterSource().addValue("name", book.getName());
+        params.addValue("id_author", book.getAuthor());
+        params.addValue("id_genre", book.getGenre());
+
+        namedParameterJdbcOperations.update("INSERT INTO books (name, id_author, id_genre) VALUES (:name, :id_author, :id_genre)", params, keyHolder, new String[]{"id_book"});
+
+        book.setId(keyHolder.getKey().longValue());
     }
 
     @Override

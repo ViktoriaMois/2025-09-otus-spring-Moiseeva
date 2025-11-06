@@ -2,7 +2,10 @@ package com.example.dao.genre;
 
 import com.example.domain.Genre;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -28,8 +31,12 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public void insert(Genre genre) {
-        namedParameterJdbcOperations.update("INSERT INTO genres (id_genre, name) VALUES (:id_genre, :name)",
-                Map.of("id_genre", genre.getId(), "name", genre.getName()));
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource params = new MapSqlParameterSource().addValue("name", genre.getName());
+
+        namedParameterJdbcOperations.update("INSERT INTO genres (name) VALUES (:name)", params, keyHolder, new String[]{"id_genre"});
+
+        genre.setId(keyHolder.getKey().longValue());
     }
 
     @Override

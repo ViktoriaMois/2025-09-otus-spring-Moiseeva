@@ -2,8 +2,10 @@ package com.example.dao.author;
 
 import com.example.domain.Author;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -29,8 +31,12 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public void insert(Author author) {
-        namedParameterJdbcOperations.update("INSERT INTO authors (id_author, full_name) VALUES (:id_author, :full_name)",
-                Map.of("id_author", author.getId(), "full_name", author.getFullName()));
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource params = new MapSqlParameterSource().addValue("full_name", author.getFullName());
+
+        namedParameterJdbcOperations.update("INSERT INTO authors (full_name) VALUES (:full_name)", params, keyHolder, new String[]{"id_author"});
+
+        author.setId(keyHolder.getKey().longValue());
     }
 
     @Override

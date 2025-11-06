@@ -33,9 +33,9 @@ class BookDaoJdbcTest {
     void setUp() {
         bookDaoJdbc = new BookDaoJdbc(namedParameterJdbcOperations);
         genreDaoJdbc = new GenreDaoJdbc(namedParameterJdbcOperations);
-        genreDaoJdbc.insert(new Genre(2L, "Genre"));
+        genreDaoJdbc.insert(new Genre(null, "Genre"));
         authorDaoJdbc = new AuthorDaoJdbc(namedParameterJdbcOperations);
-        authorDaoJdbc.insert(new Author(2L, "Author"));
+        authorDaoJdbc.insert(new Author(null, "Author"));
     }
 
     @AfterEach
@@ -48,9 +48,9 @@ class BookDaoJdbcTest {
     @Test
     void count() {
         assertEquals(0, bookDaoJdbc.count());
-        bookDaoJdbc.insert(new Book(1L, "Book", 2L, 2L));
+        bookDaoJdbc.insert(new Book(null, "Book1", authorDaoJdbc.getByName("Author").getId(), genreDaoJdbc.getByName("Genre").getId()));
         assertEquals(1, bookDaoJdbc.count());
-        bookDaoJdbc.insert(new Book(2L, "Book2", 2L, 2L));
+        bookDaoJdbc.insert(new Book(null, "Book2", authorDaoJdbc.getByName("Author").getId(), genreDaoJdbc.getByName("Genre").getId()));
         assertEquals(2, bookDaoJdbc.count());
     }
 
@@ -63,30 +63,31 @@ class BookDaoJdbcTest {
 
     @Test
     void getById() {
-        bookDaoJdbc.insert(new Book(1L, "Book", 2L, 2L));
-        Book bookExp = bookDaoJdbc.getById(1L);
-        assertEquals(1L, bookExp.getId());
+        bookDaoJdbc.insert(new Book(null, "Book3", authorDaoJdbc.getByName("Author").getId(), genreDaoJdbc.getByName("Genre").getId()));
+        Book bookExp = bookDaoJdbc.getById(bookDaoJdbc.getByName("Book3").getId());
+        assertEquals(bookDaoJdbc.getByName("Book3").getId(), bookExp.getId());
     }
 
     @Test
     void getByName() {
-        bookDaoJdbc.insert(new Book(1L, "Book1", 2L, 2L));
-        Book book = bookDaoJdbc.getByName("Book1");
+        bookDaoJdbc.insert(new Book(null, "Book4", authorDaoJdbc.getByName("Author").getId(), genreDaoJdbc.getByName("Genre").getId()));
+        Book book = bookDaoJdbc.getByName("Book4");
         assertNotNull(book);
-        assertEquals("Book1", book.getName());
+        assertEquals("Book4", book.getName());
     }
 
     @Test
     void insert() {
-        Book book = new Book(4L, "Book4", 2L, 2L);
+        Book book = new Book(null, "Book5", authorDaoJdbc.getByName("Author").getId(), genreDaoJdbc.getByName("Genre").getId());
         bookDaoJdbc.insert(book);
         assertEquals(1, bookDaoJdbc.count());
     }
 
     @Test
     void deleteById() {
-        bookDaoJdbc.insert(new Book(4L, "Book4", 2L, 2L));
-        bookDaoJdbc.deleteById(4L);
-        assertEquals(0, bookDaoJdbc.count());
+        bookDaoJdbc.insert(new Book(null, "Book6", authorDaoJdbc.getByName("Author").getId(), genreDaoJdbc.getByName("Genre").getId()));
+        int amount = bookDaoJdbc.count();
+        bookDaoJdbc.deleteById(bookDaoJdbc.getByName("Book6").getId());
+        assertEquals(amount - 1, bookDaoJdbc.count());
     }
 }

@@ -32,9 +32,9 @@ class GenreDaoJdbcTest {
     @Test
     void count() {
         assertEquals(0, genreDaoJdbc.count());
-        genreDaoJdbc.insert(new Genre(1L, "Genre"));
+        genreDaoJdbc.insert(new Genre(null, "Genre1"));
         assertEquals(1, genreDaoJdbc.count());
-        genreDaoJdbc.insert(new Genre(2L, "Genre2"));
+        genreDaoJdbc.insert(new Genre(null, "Genre2"));
         assertEquals(2, genreDaoJdbc.count());
     }
 
@@ -47,30 +47,31 @@ class GenreDaoJdbcTest {
 
     @Test
     void getById() {
-        genreDaoJdbc.insert(new Genre(1L, "Genre"));
-        Genre genreExp = genreDaoJdbc.getById(1L);
-        assertEquals(1L, genreExp.getId());
+        genreDaoJdbc.insert(new Genre(null, "Genre3"));
+        Genre genreExp = genreDaoJdbc.getById(genreDaoJdbc.getByName("Genre3").getId());
+        assertEquals(genreDaoJdbc.getByName("Genre3").getId(), genreExp.getId());
     }
 
     @Test
     void getByName() {
-        genreDaoJdbc.insert(new Genre(1L, "Genre1"));
-        Genre genre = genreDaoJdbc.getByName("Genre1");
+        genreDaoJdbc.insert(new Genre(null, "Genre4"));
+        Genre genre = genreDaoJdbc.getByName("Genre4");
         assertNotNull(genre);
-        assertEquals("Genre1", genre.getName());
+        assertEquals("Genre4", genre.getName());
     }
 
     @Test
     void insert() {
-        Genre genre = new Genre(4L, "Genre4");
+        Genre genre = new Genre(null, "Genre5");
         genreDaoJdbc.insert(genre);
         assertEquals(1, genreDaoJdbc.count());
     }
 
     @Test
     void deleteById() {
-        genreDaoJdbc.insert(new Genre(4L, "Genre4"));
-        genreDaoJdbc.deleteById(4L);
-        assertEquals(0, genreDaoJdbc.count());
+        genreDaoJdbc.insert(new Genre(null, "Genre6"));
+        int amount = genreDaoJdbc.count();
+        genreDaoJdbc.deleteById(genreDaoJdbc.getByName("Genre6").getId());
+        assertEquals(amount - 1, genreDaoJdbc.count());
     }
 }

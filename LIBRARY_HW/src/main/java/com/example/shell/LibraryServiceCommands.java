@@ -13,7 +13,7 @@ import java.util.Scanner;
 @ShellComponent
 @RequiredArgsConstructor
 public class LibraryServiceCommands {
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     @Autowired
     private final LibraryService service;

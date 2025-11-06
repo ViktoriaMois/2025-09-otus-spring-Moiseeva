@@ -17,7 +17,6 @@ public class LibraryServiceImpl implements LibraryService {
     private final BookDao bookDao;
     private final GenreDao genreDao;
     private final AuthorDao authorDao;
-    private Scanner sc = new Scanner(System.in);
 
     @Override
     public void create(Scanner sc) {
@@ -29,8 +28,7 @@ public class LibraryServiceImpl implements LibraryService {
         if (sc.nextLine().equals("y")) {
             System.out.println("enter author name");
             authorName = sc.nextLine();
-            int id = authorDao.count() + 1;
-            authorDao.insert(new Author(id, authorName));
+            authorDao.insert(new Author(null, authorName));
         } else {
             System.out.println("choose author");
             authorDao.getAll().forEach(System.out::println);
@@ -40,15 +38,13 @@ public class LibraryServiceImpl implements LibraryService {
         if (sc.nextLine().equals("y")) {
             System.out.println("enter genre name");
             genreName = sc.nextLine();
-            int id = genreDao.count() + 1;
-            genreDao.insert(new Genre(id, genreName));
+            genreDao.insert(new Genre(null, genreName));
         } else {
             System.out.println("choose genre");
             genreDao.getAll().forEach(System.out::println);
             genreName = sc.nextLine();
         }
-        int id = bookDao.count() + 1;
-        bookDao.insert(new Book(id, bookName, authorDao.getByName(authorName).getId(), genreDao.getByName(genreName).getId()));
+        bookDao.insert(new Book(null, bookName, authorDao.getByName(authorName).getId(), genreDao.getByName(genreName).getId()));
     }
 
     @Override

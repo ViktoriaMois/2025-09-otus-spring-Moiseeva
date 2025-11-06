@@ -47,9 +47,9 @@ class LibraryServiceImplTest {
 
         service.create(sc);
 
-        verify(authorDao).insert(new Author(1L, "Test Author"));
-        verify(genreDao).insert(new Genre(1L, "Test Genre"));
-        verify(bookDao).insert(new Book(1L, "Test Book", 1L, 1L));
+        verify(authorDao).insert(new Author(null, "Test Author"));
+        verify(genreDao).insert(new Genre(null, "Test Genre"));
+        verify(bookDao).insert(new Book(null, "Test Book", 1L, 1L));
     }
 
     @ParameterizedTest
@@ -66,7 +66,7 @@ class LibraryServiceImplTest {
 
         service.create(sc);
 
-        verify(bookDao).insert(new Book(1L, "Test Book", 1L, 1L));
+        verify(bookDao).insert(new Book(null, "Test Book", 1L, 1L));
     }
 
     @ParameterizedTest

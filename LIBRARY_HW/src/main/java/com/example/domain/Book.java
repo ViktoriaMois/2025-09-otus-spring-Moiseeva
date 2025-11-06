@@ -1,13 +1,15 @@
 package com.example.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Data
 public class Book {
-    private final long id;
+    @Setter
+    private Long id;
     private final String name;
-    private final long author;
-    private final long genre;
+    private final Long author;
+    private final Long genre;
 }
